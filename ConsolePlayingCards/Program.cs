@@ -1,9 +1,10 @@
 ﻿using ConsolePlayingCards;
 
 // query syntax
-var startingDeck = from s in Suits()
-    from r in Ranks()
-    select new { Suit = s, Rank = r };
+var startingDeck = (from s in Suits().LogQuery("Suit Generation")
+    from r in Ranks().LogQuery("Rank Generation")
+    select new { Suit = s, Rank = r }).LogQuery("Starting Deck");
+
 
 // method syntax
 // var startingDeck = Suits()
@@ -21,6 +22,7 @@ Console.WriteLine();
 
 var top = startingDeck.Take(26);
 var bottom = startingDeck.Skip(26);
+// out shuffle, top and bottom cards stay the same
 var shuffle = top.InterleaveSequenceWith(bottom);
 
 foreach (var c in shuffle)
@@ -33,7 +35,24 @@ var times = 0;
 shuffle = startingDeck;
 do
 {
-    shuffle = shuffle.Take(26).InterleaveSequenceWith(shuffle.Skip(26));
+    // Out shuffle
+    
+    shuffle = shuffle.Take(26)
+        .LogQuery("Top Half")
+        .InterleaveSequenceWith(shuffle.Skip(26)
+        .LogQuery("Bottom Half"))
+        .LogQuery("Shuffle");
+    
+    
+    // in shuffle, all 52 cards change position
+    // In shuffle
+    
+    /*
+    shuffle = shuffle.Skip(26).LogQuery("Bottom Half")
+        .InterleaveSequenceWith(shuffle.Take(26).LogQuery("Top Half"))
+        .LogQuery("Shuffle");
+        */
+
 
     foreach (var card in shuffle)
     {
@@ -41,6 +60,8 @@ do
     }
     Console.WriteLine();
     times++;
+    Console.WriteLine(times);
+    Console.WriteLine("-------------------");
 
 } while (!startingDeck.SequenceEquals(shuffle));
 

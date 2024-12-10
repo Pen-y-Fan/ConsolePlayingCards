@@ -5,8 +5,8 @@ public static class Extensions
     public static IEnumerable<T> InterleaveSequenceWith<T>
         (this IEnumerable<T> first, IEnumerable<T> second)
     {
-        var firstIter = first.GetEnumerator();
-        var secondIter = second.GetEnumerator();
+        using var firstIter = first.GetEnumerator();
+        using var secondIter = second.GetEnumerator();
 
         while (firstIter.MoveNext() && secondIter.MoveNext())
         {
@@ -18,8 +18,8 @@ public static class Extensions
     public static bool SequenceEquals<T>
         (this IEnumerable<T> first, IEnumerable<T> second)
     {
-        var firstIter = first.GetEnumerator();
-        var secondIter = second.GetEnumerator();
+        using var firstIter = first.GetEnumerator();
+        using var secondIter = second.GetEnumerator();
 
         while ((firstIter?.MoveNext() == true) && secondIter.MoveNext())
         {
@@ -30,5 +30,15 @@ public static class Extensions
         }
 
         return true;
+    }
+
+    public static IEnumerable<T> LogQuery<T>
+        (this IEnumerable<T> sequence, string tag)
+    {
+        // File.AppendText creates a new file if the file doesn't exist.
+        using var writer = File.AppendText("debug.log");
+        writer.WriteLine($"[{DateTime.Now:O}] Executing Query {tag}");
+
+        return sequence;
     }
 }
