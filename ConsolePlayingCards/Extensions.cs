@@ -14,4 +14,21 @@ public static class Extensions
             yield return secondIter.Current;
         }
     }
+
+    public static bool SequenceEquals<T>
+        (this IEnumerable<T> first, IEnumerable<T> second)
+    {
+        var firstIter = first.GetEnumerator();
+        var secondIter = second.GetEnumerator();
+
+        while ((firstIter?.MoveNext() == true) && secondIter.MoveNext())
+        {
+            if ((firstIter.Current is not null) && !firstIter.Current.Equals(secondIter.Current))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

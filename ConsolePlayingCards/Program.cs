@@ -28,6 +28,24 @@ foreach (var c in shuffle)
     Console.WriteLine(c);
 }
 
+var times = 0;
+// We can re-use the shuffle variable from earlier, or you can make a new one
+shuffle = startingDeck;
+do
+{
+    shuffle = shuffle.Take(26).InterleaveSequenceWith(shuffle.Skip(26));
+
+    foreach (var card in shuffle)
+    {
+        Console.WriteLine(card);
+    }
+    Console.WriteLine();
+    times++;
+
+} while (!startingDeck.SequenceEquals(shuffle));
+
+Console.WriteLine(times);
+
 return;
 
 static IEnumerable<string> Ranks()
