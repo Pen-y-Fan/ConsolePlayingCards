@@ -35,23 +35,27 @@ var times = 0;
 shuffle = startingDeck;
 do
 {
-    // Out shuffle
+    // Out shuffle (Now the out shuffle is down to 30 queries)
     
+    /*
     shuffle = shuffle.Take(26)
         .LogQuery("Top Half")
         .InterleaveSequenceWith(shuffle.Skip(26)
         .LogQuery("Bottom Half"))
-        .LogQuery("Shuffle");
+        .LogQuery("Shuffle")
+        .ToArray();
+        */
     
     
     // in shuffle, all 52 cards change position
-    // In shuffle
+    // In shuffle (... you'll see similar improvements: it now executes 162 queries)
     
-    /*
+    
     shuffle = shuffle.Skip(26).LogQuery("Bottom Half")
         .InterleaveSequenceWith(shuffle.Take(26).LogQuery("Top Half"))
-        .LogQuery("Shuffle");
-        */
+        .LogQuery("Shuffle")
+        .ToArray();
+        
 
 
     foreach (var card in shuffle)
